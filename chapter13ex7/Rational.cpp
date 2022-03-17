@@ -134,13 +134,15 @@ Rational Rational::operator*=(const Rational& rational)
 
 Rational Rational::operator/=(const Rational& rational)
 {
-	m_numerator /= rational.m_numerator;
-	m_denominator /= rational.m_denominator;
+	Rational copy{ rational };
+	copy.m_numerator = copy.m_denominator;
+	copy.m_denominator = copy.m_numerator;
+	(*this) *= copy;
 	reduce();
 	return *this;
 }
 
-Rational Rational::operator+=(int other_value)
+Rational Rational::operator+=(const int other_value)
 {
 	Rational rational{ other_value, 1 };
 	(*this) += rational;
@@ -148,14 +150,14 @@ Rational Rational::operator+=(int other_value)
 	return *this;
 }
 
-Rational Rational::operator-=(int other_value)
+Rational Rational::operator-=(const int other_value)
 {
 	(*this) += (-other_value);
 	reduce();
 	return *this;
 }
 
-Rational Rational::operator*=(int other_value)
+Rational Rational::operator*=(const int other_value)
 {
 	m_numerator *= other_value;
 	m_denominator *= other_value;
@@ -163,18 +165,19 @@ Rational Rational::operator*=(int other_value)
 	return *this;
 }
 
-Rational Rational::operator/=(int other_value)
+Rational Rational::operator/=(const int other_value)
 {
-	m_numerator /= other_value;
-	m_denominator /= other_value;
+	Rational rational{ other_value, 1 };
+	rational.m_numerator = rational.m_denominator;
+	rational.m_denominator = rational.m_numerator;
+	(*this) *= rational;
 	reduce();
 	return *this;
 }
 
 Rational Rational::operator++()
 {
-	++m_numerator;
-	++m_denominator;
+	(*this) += 1;
 	reduce();
 	return *this;
 }
@@ -189,8 +192,7 @@ Rational Rational::operator++(int)
 
 Rational Rational::operator--()
 {
-	--m_numerator;
-	--m_denominator;
+	(*this) -= 1;
 	reduce();
 	return *this;
 }
